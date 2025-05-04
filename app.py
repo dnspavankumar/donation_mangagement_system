@@ -7,6 +7,7 @@ from sqlalchemy.orm import DeclarativeBase
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.utils import secure_filename
+from extensions import db, login_manager
 import uuid
 
 # Configure logging
@@ -44,12 +45,10 @@ login_manager.login_message_category = 'info'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Import models, forms, and utilities after initializing extensions
+from models import User, Donation
+
+# Create database tables
 with app.app_context():
-    from models import User, Donation
-    from forms import LoginForm, RegistrationForm, DonationForm, ProfileForm
-    from utils import allowed_file, save_image
-    
-    # Create database tables
     db.create_all()
 
 @login_manager.user_loader
